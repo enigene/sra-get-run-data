@@ -1,9 +1,9 @@
-# Get SRA Run data v1.1, Nov 10 2013
+# Get SRA Run data v1.2, Mar 19 2015
 # Download SRA sequences directly.
 # Author: Lev I. Uralsky (Institute of Molecular Genetics, Moscow, Russia)
 # v1.0, Oct 12 2103 - Initial version
 # v1.1, Nov 10 2103 - Added fastq load option. Kinda portable improvement.
-
+# v1.2, Mar 19 2015 - Cleaning of the code
 # Usage: gawk -v sra=SRR385751 -v num=200 -v random=1 -v fastq=1 -f get-sra-run.awk
 
 BEGIN {
@@ -12,14 +12,6 @@ BEGIN {
 
   HIGH_CHAR = 93 # chr(93) == ~
   LOW_CHAR = 33  # chr(33) == !
-
-# Check platform
-# http://stackoverflow.com/questions/12025617/awk-find-out-if-running-on-windows
-  is_windows = 0
-#ENVIRON["OS"]
-  if (index(tolower(ENV["OS"]), "windows") > 0) {
-    is_windows = 1
-  }
 
 # Get the Run accession
   if (sra != "") {
@@ -51,11 +43,7 @@ BEGIN {
   }
 
 # Testing server
-  if (is_windows) {
-    test = "curl -s -I -o NUL -w %%{http_code} --url " SERVER
-  } else {
-    test = "curl -s -I -o /dev/null -w %{http_code} --url " SERVER
-  }
+  test = "curl -s -I -o /dev/null -w %{http_code} --url " SERVER
   test | getline response_code
   close(test)
   if (response_code != 200) {
@@ -67,7 +55,9 @@ BEGIN {
 
 # Try get one spot from this sra
 
-  test_query = "curl -s \"" SERVER "sra.cgi?run_spot=" sra "&page=" 1 "&page_size=" 1 "\""
+  test_query = "curl -s '" SERVER "sra.cgi?run_spot=" sra "&page=" 1 "&page_size=" 1 "'"
+
+#  print test_query;
 
   while ((test_query | getline) > 0) {
 #   Get the total number of spots
@@ -136,7 +126,7 @@ BEGIN {
     currPage = pagesA[p]+0
     firstRID = ""
 
-    query = "curl -s \"" SERVER "sra.cgi?run_spot=" sra "&page=" currPage "&page_size=" pageSize "\""
+    query = "curl -s '" SERVER "sra.cgi?run_spot=" sra "&page=" currPage "&page_size=" pageSize "'"
 
     while ((query | getline) > 0) {
 #     Get the Spot index
