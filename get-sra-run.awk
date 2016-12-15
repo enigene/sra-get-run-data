@@ -8,7 +8,7 @@
 
 BEGIN {
   MAX_SPOT_PER_PAGE = 10000
-  SERVER = "http://trace.ncbi.nlm.nih.gov/Traces/sra/"
+  SERVER = "https://trace.ncbi.nlm.nih.gov/Traces/sra/"
 
   HIGH_CHAR = 93 # chr(93) == ~
   LOW_CHAR = 33  # chr(33) == !
