@@ -43,7 +43,7 @@ BEGIN {
   }
 
 # Testing server
-  test = "curl -s -I -o /dev/null -w %{http_code} --url " SERVER
+  test = "curl -k -s -I -o /dev/null -w %{http_code} --url " SERVER
   test | getline response_code
   close(test)
   if (response_code != 200) {
@@ -55,7 +55,7 @@ BEGIN {
 
 # Try get one spot from this sra
 
-  test_query = "curl -s '" SERVER "sra.cgi?run_spot=" sra "&page=" 1 "&page_size=" 1 "'"
+  test_query = "curl -k -s '" SERVER "sra.cgi?run_spot=" sra "&page=" 1 "&page_size=" 1 "'"
 
 #  print test_query;
 
@@ -126,7 +126,7 @@ BEGIN {
     currPage = pagesA[p]+0
     firstRID = ""
 
-    query = "curl -s '" SERVER "sra.cgi?run_spot=" sra "&page=" currPage "&page_size=" pageSize "'"
+    query = "curl -k -s '" SERVER "sra.cgi?run_spot=" sra "&page=" currPage "&page_size=" pageSize "'"
 
     while ((query | getline) > 0) {
 #     Get the Spot index
